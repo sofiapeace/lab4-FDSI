@@ -16,6 +16,7 @@ import subprocess
 import bcrypt
 import yaml
 from flask import Flask, request, render_template, redirect, url_for, session
+from markupsafe import escape
 
 app = Flask(__name__)
 
@@ -98,7 +99,9 @@ def ping():
         text=True,
         timeout=5,
     )
-    return "<pre>" + result.stdout + "</pre>"
+    # [FIX-08] Salida escapada antes de meterla en HTML (CWE-79 corregido,
+    #          hallazgo que Snyk encontro de bono en el primer escaneo).
+    return "<pre>" + str(escape(result.stdout)) + "</pre>"
 
 
 @app.route("/download")
@@ -112,7 +115,8 @@ def download():
     if not os.path.isfile(requested):
         return "Archivo no encontrado", 404
     with open(requested, "r") as f:
-        return "<pre>" + f.read() + "</pre>"
+        # [FIX-08] Salida escapada antes de meterla en HTML (CWE-79 corregido).
+        return "<pre>" + str(escape(f.read())) + "</pre>"
 
 
 @app.route("/import", methods=["POST"])
@@ -124,7 +128,8 @@ def import_config():
         config = yaml.safe_load(data)
     except yaml.YAMLError:
         return "YAML invalido", 400
-    return "Config cargada: " + str(config)
+    # [FIX-08] Salida escapada antes de meterla en HTML (CWE-79 corregido).
+    return "Config cargada: " + str(escape(str(config)))
 
 
 if __name__ == "__main__":
