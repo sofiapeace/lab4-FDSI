@@ -17,6 +17,7 @@ import bcrypt
 import yaml
 from flask import Flask, request, render_template, redirect, url_for, session
 from markupsafe import escape
+from werkzeug.utils import safe_join
 
 app = Flask(__name__)
 
@@ -106,11 +107,13 @@ def ping():
 
 @app.route("/download")
 def download():
-    # [FIX-05] Path traversal corregido (CWE-22): se normaliza la ruta y se
-    #          verifica que siga dentro de FILES_DIR antes de abrir el archivo.
+    # [FIX-05] Path traversal corregido (CWE-22) con safe_join de Werkzeug,
+    #          la funcion estandar pensada justo para esto (en vez de una
+    #          comprobacion manual que el analizador estatico no reconocia
+    #          como saneador).
     filename = request.args.get("file", "readme.txt")
-    requested = os.path.abspath(os.path.join(FILES_DIR, filename))
-    if not requested.startswith(FILES_DIR + os.sep):
+    requested = safe_join(FILES_DIR, filename)
+    if requested is None:
         return "Ruta no permitida", 403
     if not os.path.isfile(requested):
         return "Archivo no encontrado", 404
