@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Vuln Portal</title>
+</head>
+<body>
+    <h1>Vuln Portal</h1>
+    {% if user %}
+        <p>Sesion iniciada como <b>{{ user }}</b>.</p>
+    {% else %}
+        <p><a href="/login">Iniciar sesion</a></p>
+    {% endif %}
+    <ul>
+        <li><a href="/ping?host=127.0.0.1">Ping de diagnostico</a></li>
+        <li><a href="/download?file=readme.txt">Descargar readme</a></li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# [VULN-07] Dependencias con CVE conocidos fijadas a versiones viejas
+#           (CWE-1104 / CWE-1035 / OWASP A06:2021 - Vulnerable and Outdated Components).
+# Snyk (Open Source) y el analisis de composicion deberian marcarlas.
+Flask==0.12.2        # CVE-2018-1000656 (DoS por JSON)
+PyYAML==3.13         # CVE-2017-18342 (yaml.load ejecuta codigo arbitrario)
+requests==2.19.1     # CVE-2018-18074 (fuga de credenciales en redireccion)
+Werkzeug==0.14.1     # CVE-2019-14806 (varias)
